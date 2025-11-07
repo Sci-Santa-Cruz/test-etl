@@ -1,0 +1,19 @@
+{
+  "columns": [
+    {"name": "email", "type": "string", "required": true},
+    {"name": "fgh", "type": "string", "required": false},
+    {"name": "Badmail", "type": "string", "required": false, "allowed": ["HARD", "SOFT", ""]},
+    {"name": "Baja", "type": "string", "required": false},
+    {"name": "Fecha envio", "type": "datetime", "required": true, "format": "%d/%m/%Y %H:%M"},
+    {"name": "Fecha open", "type": "datetime", "required": false, "format": "%d/%m/%Y %H:%M"},
+    {"name": "Opens", "type": "integer", "required": true, "min": 0},
+    {"name": "Opens virales", "type": "integer", "required": true, "min": 0},
+    {"name": "Fecha click", "type": "datetime", "required": false, "format": "%d/%m/%Y %H:%M"},
+    {"name": "Clicks", "type": "integer", "required": true, "min": 0},
+    {"name": "Clicks virales", "type": "integer", "required": true, "min": 0},
+    {"name": "Links", "type": "string", "required": false},
+    {"name": "IPs", "type": "string", "required": false},
+    {"name": "Navegadores", "type": "string", "required": false},
+    {"name": "Plataformas", "type": "string", "required": false}
+  ]
+}
