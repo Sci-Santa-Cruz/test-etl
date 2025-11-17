@@ -1,0 +1,8 @@
+pandas
+pydantic
+paramiko
+mysql-connector-python
+apache-airflow
+requests
+pyyaml
+great_expectations

@@ -1,0 +1,26 @@
+database:
+  host: localhost
+  user: root
+  password: ''
+  database: visitas_db
+
+sftp:
+  host: 8.8.8.8
+  port: 22
+  username: sftp_user
+  password: sftp_pass
+  remote_dir: /home/vinkOS/archivosVisitas
+  local_dir: /tmp/etl_visitas
+
+airflow:
+  dag_id: etl_visitas_diario
+  schedule: '@daily'
+
+monitoring:
+  sentry_dsn: https://your-sentry-dsn@sentry.io/project
+  slack_webhook: https://hooks.slack.com/services/your/webhook
+  openlineage_url: http://localhost:5000/api/v1/lineage
+
+logging:
+  level: INFO
+  format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'

@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: etl_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: visitas_db
+      MYSQL_USER: etl_user
+      MYSQL_PASSWORD: etl_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  airflow:
+    image: apache/airflow:2.7.0
+    container_name: etl_airflow
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: mysql://etl_user:etl_pass@mysql:3306/visitas_db
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
+      AIRFLOW__CORE__PLUGINS_FOLDER: /opt/airflow/plugins
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./modules:/opt/airflow/modules
+      - ./schemas:/opt/airflow/schemas
+      - ./expectations:/opt/airflow/expectations
+      - ./integrations:/opt/airflow/integrations
+      - ./configs:/opt/airflow/configs
+      - ./data:/opt/airflow/data
+      - ./logs:/opt/airflow/logs
+    depends_on:
+      mysql:
+        condition: service_healthy
+    command: >
+      bash -c "
+      airflow db init &&
+      airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com --no-input &&
+      airflow webserver --port 8080 &
+      airflow scheduler
+      "
+
+  marquez:
+    build: ./marquez
+    container_name: etl_marquez
+    environment:
+      POSTGRES_PORT: 2345
+    ports:
+      - "3000:3000"  # Web UI
+      - "5000:5000"  # API
+      - "5001:5001"  # Admin
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:
